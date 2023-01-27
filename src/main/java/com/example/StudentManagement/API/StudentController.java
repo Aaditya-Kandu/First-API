@@ -2,6 +2,8 @@ package com.example.StudentManagement.API;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -15,22 +17,36 @@ StudentService studentService;
 
      // Adding the information or Making Post API
     @PostMapping("/add_student")
-    public String addStudent(@RequestBody Student student) {
-       return studentService.addStudent(student);
+    public ResponseEntity addStudent(@RequestBody Student student) {
+       String respons = studentService.addStudent(student);
+       return new ResponseEntity<>(respons , HttpStatus.CREATED);
     }
 
     // Get the information
     @GetMapping("/get_student")
-    public Student getStudent(@RequestParam("q") int admnNo){
-        return studentService.getStudent(admnNo);
+    public ResponseEntity getStudent(@RequestParam("q") int admnNo){
+       Student student = studentService.getStudent(admnNo);
+       return new ResponseEntity(student,HttpStatus.FOUND);
+
 
     }
     @DeleteMapping("/delete_student/{id}")
-    public String deleteStudent(@PathVariable("id") int id){
-        return studentService.deleteStudet(id);
+    public ResponseEntity deleteStudent(@PathVariable("id") int id){
+        String response = studentService.deleteStudet(id);
+        if(response.equals("Invalid Id")){
+            return new ResponseEntity<>(response , HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(response , HttpStatus.FOUND);
+
     }
     @PutMapping("/upadate_student")
-    public String updateStudnet(@RequestParam("id") int id, @RequestParam("age") int age){
-        return studentService.updateStudent(id , age);
+    public ResponseEntity updateStudnet(@RequestParam("id") int id, @RequestParam("age") int age){
+
+        String response = studentService.updateStudent(id,age);
+        if(response == null){
+            return new ResponseEntity<>("Invalid request" , HttpStatus.BAD_REQUEST );
+        }
+
+        return new ResponseEntity<>("Updated" , HttpStatus.ACCEPTED);
     }
 }

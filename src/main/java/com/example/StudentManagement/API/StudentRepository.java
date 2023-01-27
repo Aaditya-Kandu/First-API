@@ -35,7 +35,7 @@ public class StudentRepository {
 
     public String updateStudnet(@RequestParam("id") int id, @RequestParam("age") int age){
         if(!db.containsKey(id)){
-            return "Invalid Id";
+            return null;
         }
         int upage;
         db.get(id).setAge(20);
